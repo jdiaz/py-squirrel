@@ -32,9 +32,9 @@ def getconnection(config):
         return None
 
 
-def is_valid_config():
-    for key in DB:
-        if DB[key] == '' or DB[key] == None:
+def is_valid(config):
+    for key in config:
+        if config[key] == '' or config[key] == None:
             return False
     return True
 
@@ -65,7 +65,7 @@ def backup(conn):
 
 if __name__ == '__main__':
     print('Squirelling away...')
-    if not is_valid_config():
+    if not is_valid(DB):
         print('Invalid db config info. Please update DB dictionary.')
         exit()
     conn = getconnection(DB)

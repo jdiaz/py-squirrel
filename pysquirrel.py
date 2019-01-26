@@ -12,8 +12,9 @@ DB = {
   'raise_on_warnings': True
 }
 
+
 SHOW_TABLES = 'SHOW TABLES;'
-DESCRIBE_TABLE = 'DESCRIBE TABLE %s;'
+DESCRIBE_TABLE = 'DESCRIBE {};'
 
 
 def getconnection(config):
@@ -49,8 +50,17 @@ def backup(conn):
     print('Running backup')
     cursor = conn.cursor()
     execute_query(cursor, SHOW_TABLES)
-    tables = [table_name[0] for table_name in cursor]
+    tables = [table_info[0] for table_info in cursor.fetchall()]
+    cursor.close()
     print('Found the following tables: {}'.format(tables))
+    for table in tables:
+        cursor = conn.cursor()
+        execute_query(cursor, DESCRIBE_TABLE.format(table))
+        metadata = cursor.fetchall()
+        print(metadata)
+        cursor.close()
+    
+    conn.close()
 
 
 if __name__ == '__main__':

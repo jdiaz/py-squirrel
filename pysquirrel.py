@@ -1,20 +1,42 @@
 #!/usr/bin/env python3
 
+import argparse
 import mysql.connector
 from mysql.connector import errorcode
 
 
 DB = {
-  'user': 'u',
-  'password': 'p',
-  'host': '127.0.0.1',
-  'database': 'mydb',
+  'user': '',
+  'password': '',
+  'host': '',
+  'database': '',
   'raise_on_warnings': True
 }
-
-
 SHOW_TABLES = 'SHOW TABLES;'
 DESCRIBE_TABLE = 'DESCRIBE {};'
+
+
+def cli_setup():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('user')
+    parser.add_argument('password')
+    parser.add_argument('host')
+    parser.add_argument('dbname')
+    args = parser.parse_args()
+    for arg in vars(args):
+        if not is_valid_argument(arg):
+            return False
+    DB['user'] = args.user
+    DB['password'] = args.password
+    DB['host'] = args.host
+    DB['database'] = args.dbname
+    return True
+
+
+def is_valid_argument(arg):
+    if arg == '' or arg == None:
+        return False
+    return True
 
 
 def getconnection(config):
@@ -30,13 +52,6 @@ def getconnection(config):
     else:
         conn.close()
         return None
-
-
-def is_valid(config):
-    for key in config:
-        if config[key] == '' or config[key] == None:
-            return False
-    return True
 
 
 def execute_query(cursor, query):
@@ -64,9 +79,10 @@ def backup(conn):
 
 
 if __name__ == '__main__':
-    print('Squirelling away...')
-    if not is_valid(DB):
-        print('Invalid db config info. Please update DB dictionary.')
+    success = cli_setup()
+    if not success:
+        print('Invalid db config info. Please provide correct positional arguments. Run --help for help.')
         exit()
+    print('Squirelling away...')
     conn = getconnection(DB)
     backup(conn)   

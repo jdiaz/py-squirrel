@@ -102,7 +102,7 @@ def backup(conn):
             f.write('{}\n'.format(insert_record))
             print(insert_record)
         cursor.close()
-        print('Done\n')
+        print('Done')
     conn.close()
     f.close()
 
@@ -117,8 +117,10 @@ def create_sql_create_table_statement(table, table_metada):
     statement_parts.append(');')
     return ''.join(statement_parts)
 
+
 def create_sql_drop_table_statement(table):
     return 'DROP TABLE {};'.format(table)
+
 
 def create_sql_insert_statement(table, columns, row):
     statement_parts = ['INSERT INTO {} VALUES ('.format(table)]
@@ -132,6 +134,7 @@ def create_sql_insert_statement(table, columns, row):
             statement_parts.append(',')
     statement_parts.append(');')
     return ''.join(statement_parts)
+
 
 if __name__ == '__main__':
     success = cli_setup()

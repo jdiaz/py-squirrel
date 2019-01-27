@@ -15,9 +15,11 @@ Sometimes you might work in a constrained environment where database dumps are o
 1. Run ```pip install mysql-connector-python```
 2. Configure the DB object with appropriate db connection information
 3. Run ```./pysquirrel user upass 127.0.0.1 dbname``` replacing positional arguments with the user, password, host ip address, and database name to connect to
-4. Open `$DATABASE_NAME_backup_$CURRENT_UNIXTIME.sql` produced. The file contains all relevant SQL statements to recreate and insert each record in the database.
+4. Open `$DATABASE_NAME_backup_$CURRENT_UNIXTIME.sql` produced. The file contains all relevant SQL statements to recreate and insert each record in the database. 
 
 ### Sample output
+Sample output can be found in the samples folder of the repo.
+i.e.
 *pocketdb_backup_1548549107.sql*
 ```sql
 DROP TABLE issue;

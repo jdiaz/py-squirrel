@@ -108,14 +108,14 @@ def backup(conn):
 
 
 def create_sql_create_table_statement(table, table_metada):
-    statement_parts = ['CREATE TABLE {} ('.format(table)]
+    statement_parts = ['CREATE TABLE {} (\n'.format(table)]
     n = len(table_metada) 
     for i in range(n):
         column_metadata = table_metada[i]
-        statement_parts.append(column_metadata[0] + ' ' + column_metadata[1])
+        statement_parts.append('\t{} {}'.format(column_metadata[0], column_metadata[1]))
         if i != n - 1:
-            statement_parts.append(',')
-    statement_parts.append(');')
+            statement_parts.append(',\n')
+    statement_parts.append('\n);')
     return ''.join(statement_parts)
 
 

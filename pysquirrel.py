@@ -106,6 +106,7 @@ def backup(conn):
     conn.close()
     f.close()
 
+
 def create_sql_create_table_statement(table, table_metada):
     statement_parts = ['CREATE TABLE {} ('.format(table)]
     n = len(table_metada) 

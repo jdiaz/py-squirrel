@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import datetime
 import mysql.connector
 from mysql.connector import errorcode
 
@@ -14,6 +15,7 @@ DB = {
 }
 SHOW_TABLES = 'SHOW TABLES;'
 DESCRIBE_TABLE = 'DESCRIBE {};'
+SELECT_ALL_FROM_TABLE = 'SELECT * FROM {};'
 
 
 def cli_setup():
@@ -62,21 +64,74 @@ def execute_query(cursor, query):
 
 
 def backup(conn):
-    print('Running backup')
+    print('Creating SQL backup')
     cursor = conn.cursor()
     execute_query(cursor, SHOW_TABLES)
     tables = [table_info[0] for table_info in cursor.fetchall()]
     cursor.close()
-    print('Found the following tables: {}'.format(tables))
+    print('==== Found the following TABLES: {} ===='.format(tables))
+    table_column_map = dict()
+    table_metadata_map = dict()
     for table in tables:
         cursor = conn.cursor()
         execute_query(cursor, DESCRIBE_TABLE.format(table))
         metadata = cursor.fetchall()
-        print(metadata)
+        table_metadata_map[table] = metadata
+        columns = [column[0] for column in metadata]
+        table_column_map[table] = columns
         cursor.close()
-    
+    print('==== Now creating DROP and CREATE statements ====')
+    dt = datetime.datetime.now()
+    now = dt.strftime('%s')
+    f = open('{}_backup_{}.sql'.format(DB['database'], now),"w+")
+    for table in table_metadata_map:
+        create_table = create_sql_create_table_statement(table, table_metadata_map[table])
+        drop_table = create_sql_drop_table_statement(table)
+        f.write('{}\n'.format(drop_table))
+        f.write('{}\n'.format(create_table))
+        print(drop_table)
+        print(create_table)
+    print('==== Now creating INSERT statements ====')
+    for table in tables:
+        print('About to query: {}\n'.format(table))
+        cursor = conn.cursor()
+        execute_query(cursor, SELECT_ALL_FROM_TABLE.format(table))
+        for row in cursor:
+            columns = table_column_map[table]
+            insert_record = create_sql_insert_statement(table, columns, row)
+            f.write('{}\n'.format(insert_record))
+            print(insert_record)
+        cursor.close()
+        print('Done\n')
     conn.close()
+    f.close()
 
+def create_sql_create_table_statement(table, table_metada):
+    statement_parts = ['CREATE TABLE {} ('.format(table)]
+    n = len(table_metada) 
+    for i in range(n):
+        column_metadata = table_metada[i]
+        statement_parts.append(column_metadata[0] + ' ' + column_metadata[1])
+        if i != n - 1:
+            statement_parts.append(',')
+    statement_parts.append(');')
+    return ''.join(statement_parts)
+
+def create_sql_drop_table_statement(table):
+    return 'DROP TABLE {};'.format(table)
+
+def create_sql_insert_statement(table, columns, row):
+    statement_parts = ['INSERT INTO {} VALUES ('.format(table)]
+    n = len(columns)
+    for i in range(n):
+        placeholder = '{}'
+        if type(row[i]) == str:
+            placeholder = "'{}'"
+        statement_parts.append(placeholder.format(row[i]))
+        if i != n - 1:
+            statement_parts.append(',')
+    statement_parts.append(');')
+    return ''.join(statement_parts)
 
 if __name__ == '__main__':
     success = cli_setup()
@@ -85,4 +140,4 @@ if __name__ == '__main__':
         exit()
     print('Squirelling away...')
     conn = getconnection(DB)
-    backup(conn)   
+    backup(conn) 

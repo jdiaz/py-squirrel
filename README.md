@@ -4,7 +4,7 @@ PySquirrel
 Dynamically create an SQL script backup of target database.
 
 ### Y tho?
-Sometimes you might work in a constrained environment where database dumps are out of reach for any number of reasons. In such cases, **pysquirrel** allows you to create the equivalent SQL statments to backup or migrate your database.
+Sometimes you might work in a constrained environment where database dumps are out of reach for any number of reasons. In such cases, **pysquirrel** allows you to create the equivalent SQL statements to recreate the tables and records in your database.
 
 ### Requirements
 * Python 3
@@ -14,10 +14,13 @@ Sometimes you might work in a constrained environment where database dumps are o
 
 1. Run ```pip install mysql-connector-python```
 2. Run ```./pysquirrel user upass 127.0.0.1 dbname``` replacing positional arguments with the user, password, host ip address, and database name to connect to
-3. Open `$DATABASE_NAME_backup_$CURRENT_UNIXTIME.sql` produced. The file contains all relevant SQL statements to recreate and insert each record in the database. 
+3. Open `$DATABASE_NAME_backup_$CURRENT_UNIXTIME.sql` produced. The file contains all relevant SQL statements to recreate and insert each record in the database.
+
+**caveat:**
+Primary keys, foreign keys, and indexes are not automatically generated, **yet**.
 
 ### Sample output
-Sample output can be found in the samples folder of the repo.
+Example output can be found in the samples folder of the repo.
 i.e.
 *pocketdb_backup_1548549107.sql*
 ```sql

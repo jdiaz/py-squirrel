@@ -1,10 +1,14 @@
 PySquirrel
 ==========
 
-Dynamically create an SQL script backup of a database.
+Dynamically create an SQL script backup of target database.
 
 ### Y tho?
-Somethimes you might work in a constraint environment such that database dumps are out of reach. For such cases PySquirrel can allow you to create the equivalent SQL statments to backup or migrate your database.
+Sometimes you might work in a constrained environment where database dumps are out of reach for any number of reasons. In such cases, **pysquirrel** allows you to create the equivalent SQL statments to backup or migrate your database.
+
+### Requirements
+* Python 3
+* mysql-connector-python - Installed via pip
 
 ### Usage
 

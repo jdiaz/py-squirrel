@@ -68,9 +68,9 @@ CREATE TABLE user (
 	user_name varchar(255),
 	created_time int(11)
 );
-INSERT INTO issue VALUES (1,1,'Brain not found','Cant seem to find my own head',1);
-INSERT INTO tag VALUES (1,'electronics','A issue related to electronic devices',1,1548545913,1548545913);
-INSERT INTO user VALUES (1,'test',1548545709);
-INSERT INTO user VALUES (2,'test2',1548545736);
+INSERT INTO issue VALUES (1, 1, 'Brain not found', 'Cant seem to find my own head', 1);
+INSERT INTO tag VALUES (1, 'electronics', 'A issue related to electronic devices', 1, 1548545913, 1548545913);
+INSERT INTO user VALUES (1, 'test', 1548545709);
+INSERT INTO user VALUES (2, 'test2', 1548545736);
 ```
 

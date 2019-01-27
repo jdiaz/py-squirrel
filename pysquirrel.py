@@ -83,7 +83,7 @@ def backup(conn):
     print('==== Now creating DROP and CREATE statements ====')
     dt = datetime.datetime.now()
     now = dt.strftime('%s')
-    f = open('{}_backup_{}.sql'.format(DB['database'], now),"w+")
+    f = open('{}_backup_{}.sql'.format(DB['database'], now),'w+')
     for table in table_metadata_map:
         create_table = create_sql_create_table_statement(table, table_metadata_map[table])
         drop_table = create_sql_drop_table_statement(table)
@@ -132,7 +132,7 @@ def create_sql_insert_statement(table, columns, row):
             placeholder = "'{}'"
         statement_parts.append(placeholder.format(row[i]))
         if i != n - 1:
-            statement_parts.append(',')
+            statement_parts.append(', ')
     statement_parts.append(');')
     return ''.join(statement_parts)
 

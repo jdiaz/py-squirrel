@@ -1,4 +1,4 @@
-PySquirrel
+pysquirrel
 ==========
 
 Dynamically create an SQL script backup of target mysql database.

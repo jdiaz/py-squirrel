@@ -141,7 +141,7 @@ if __name__ == '__main__':
     success = cli_setup()
     if not success:
         print('Invalid db config info. Please provide correct positional arguments. Run --help for help.')
-        exit()
+        exit(1)
     print('Squirelling away...')
     conn = getconnection(DB)
     backup(conn) 

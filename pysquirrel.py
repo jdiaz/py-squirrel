@@ -7,14 +7,10 @@ from mysql.connector import errorcode
 
 
 DB = {
-  'user': '',
-  'password': '',
-  'host': '',
-  'database': '',
   'raise_on_warnings': True
 }
 SHOW_TABLES = 'SHOW TABLES;'
-DESCRIBE_TABLE = 'DESCRIBE {};'
+DESCRIBE_TABLE = 'DESCRIBE {}'
 SELECT_ALL_FROM_TABLE = 'SELECT * FROM {};'
 
 
@@ -46,9 +42,9 @@ def getconnection(config):
         return mysql.connector.connect(**config)
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
+            print('Something is wrong with your user name or password')
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
+            print('Database does not exist')
         else:
             print(err)
     else:
@@ -60,7 +56,7 @@ def execute_query(cursor, query):
     try:
         cursor.execute(query)
     except mysql.connector.Error as err:
-        print("Failed running query: {}".format(err))
+        print("Failed running query: {}" % err)
 
 
 def backup(conn):
@@ -69,7 +65,12 @@ def backup(conn):
     execute_query(cursor, SHOW_TABLES)
     tables = [table_info[0] for table_info in cursor.fetchall()]
     cursor.close()
-    print('==== Found the following TABLES: {} ===='.format(tables))
+
+    print('=================================================')
+    print('========= Found the following TABLES ============')
+    print('=================================================')
+    print(f'\t{tables}')
+
     table_column_map = dict()
     table_metadata_map = dict()
     for table in tables:
@@ -80,29 +81,34 @@ def backup(conn):
         columns = [column[0] for column in metadata]
         table_column_map[table] = columns
         cursor.close()
+
+    print('=================================================')
     print('==== Now creating DROP and CREATE statements ====')
-    dt = datetime.datetime.now()
-    now = dt.strftime('%s')
-    f = open('{}_backup_{}.sql'.format(DB['database'], now),'w+')
+    print('=================================================')
+
+    f = open('{}_backup_{}.sql'.format(DB['database'], datetime.datetime.now().strftime('%s')), 'w+')
     for table in table_metadata_map:
         create_table = create_sql_create_table_statement(table, table_metadata_map[table])
         drop_table = create_sql_drop_table_statement(table)
         f.write('{}\n'.format(drop_table))
         f.write('{}\n'.format(create_table))
-        print(drop_table)
-        print(create_table)
-    print('==== Now creating INSERT statements ====')
+        print(f'\t{drop_table}')
+        print(f'\t{create_table}')
+
+    print('=================================================')
+    print('======== Now creating INSERT statements =========')
+    print('=================================================')
     for table in tables:
-        print('About to query: {}\n'.format(table))
+        print('\tQuerying: {}\n'.format(table))
         cursor = conn.cursor()
         execute_query(cursor, SELECT_ALL_FROM_TABLE.format(table))
         for row in cursor:
             columns = table_column_map[table]
             insert_record = create_sql_insert_statement(table, columns, row)
             f.write('{}\n'.format(insert_record))
-            print(insert_record)
+            print(f'\t{insert_record}')
         cursor.close()
-        print('Done')
+
     conn.close()
     f.close()
 
@@ -140,8 +146,10 @@ def create_sql_insert_statement(table, columns, row):
 if __name__ == '__main__':
     success = cli_setup()
     if not success:
-        print('Invalid db config info. Please provide correct positional arguments. Run --help for help.')
+        print('Invalid db config info. Please provide correct positional arguments: <user> <pw> <host> <dbname>')
         exit(1)
-    print('Squirelling away...')
+    print('Pysquirrel running...')
     conn = getconnection(DB)
-    backup(conn) 
+    backup(conn)
+    print('Completed')
+    exit(0)

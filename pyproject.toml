@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "pysquirrel"
+version = "0.1.0"
+description = "SQL insert stmt backup"
+authors = ["José R. Díaz"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+mysql-connector-python = "^8.0.30"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

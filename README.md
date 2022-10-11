@@ -1,18 +1,18 @@
 pysquirrel
 ==========
 
-Dynamically create an SQL script backup of target mysql database.
+Pyquirrel is a quick and dirty script to dynamically create an SQL script backup of target mysql database.
 
 ### Y tho?
 Sometimes you might work in a constrained environment where database dumps are out of reach for any number of reasons. In such cases, **pysquirrel** allows you to create the equivalent SQL statements to recreate the tables and records in your database.
 
 ### Requirements
 * Python 3
-* mysql-connector-python - Installed via pip
+* mysql-connector-python - Installed via pip or Poetry
 
 ### Usage
 
-1. Run ```pip install mysql-connector-python```
+1. Run ```pip install mysql-connector-python``` or Use poetry: ```poetry shell && poetry install```
 2. Run ```./pysquirrel user upass 127.0.0.1 dbname``` replacing positional arguments with the user, password, host ip address, and database name to connect to
 3. Open `$DATABASE_NAME_backup_$CURRENT_UNIXTIME.sql` produced. The file contains all relevant SQL statements to recreate and insert each record in the database.
 
